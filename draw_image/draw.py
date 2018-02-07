@@ -5,7 +5,7 @@ import textwrap
 
 
 def draw_on_image(image_path, image_save_path, font_path, text_to_draw,
-                  shadowcolor='black', spacing=15, font_size=70):
+                  shadowcolor='black', spacing=15):
     """
     Рисуем на изображении буквы
     :param image_path: str - Путь до изображения которое открываем
@@ -14,7 +14,6 @@ def draw_on_image(image_path, image_save_path, font_path, text_to_draw,
     :param text_to_draw: str - Что пишем собственно говоря
     :param shadowcolor: str - Цвет обводки
     :param spacing: int - Пробелы между строками
-    :param font_size: int - Размер шрифта
     :return:
     """
 
@@ -22,11 +21,25 @@ def draw_on_image(image_path, image_save_path, font_path, text_to_draw,
     img = Image.open(image_path)
     # Получаем размеры
     img_width, img_height = img.size
-    # Выбираем шрифт
-    font = ImageFont.truetype(font_path, font_size)
     # Cплитим на линии чтобы красиво было
-    lines = textwrap.wrap(text_to_draw, width=30)
-    # И соединяем с символом новой строки
+    lines = textwrap.wrap(text_to_draw, width=40)
+    # Получаем индекс самого длинного текста в строке
+    longest_elem_idx = lines.index(max(lines, key=len))
+    # Изначальный размер шрифта, потом будем повышать
+    font_size = 1
+    # Часть изображения в которой должен поместиться текст
+    img_fraction = 0.85
+    # Выбираем шрифт, дальше будем его повышать
+    font = ImageFont.truetype(font_path, font_size)
+    # Смотрим по длине первой линии
+    while font.getsize(lines[longest_elem_idx])[0] < img_fraction * img_width:
+        font_size += 1
+        font = ImageFont.truetype(font_path, font_size)
+    # Уменьшаем на 1 чтобы точно влез
+    font_size -= 1
+    # Ставим финальный шрифт с финальным размером
+    font = ImageFont.truetype(font_path, font_size)
+    # Соединяем лист строк в одну через символ новой строки для того чтобы его "нарисовать"
     splitted_text = '\n'.join(lines)
     # Готовим его к тому чтобы рисовать
     draw = ImageDraw.Draw(img)
@@ -47,6 +60,5 @@ if __name__ == "__main__":
                   image_save_path='sample_with_text.jpg',
                   font_path='reforma_grotesk_bold.ttf',
                   text_to_draw='АНДРЕЙ ВОРОБЬЕВ ВЫСТУПИТ С ЕЖЕГОДНЫМ ОБРАЩЕНИЕМ К ЖИТЕЛЯМ ПОДМОСКОВЬЯ 14 ФЕВРАЛЯ',
-                  shadowcolor='green',
-                  spacing=20,
-                  font_size=60)
+                  shadowcolor='black',
+                  spacing=10)
