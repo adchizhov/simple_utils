@@ -4,10 +4,10 @@ from PIL import ImageDraw
 import textwrap
 
 
-def draw_on_image(image_path, image_save_path, font_path, text_to_draw,
+def draw_on_image(image_path, image_save_path, logo_path, font_path, text_to_draw,
                   shadowcolor='black', spacing=15):
     """
-    Рисуем на изображении буквы
+    Функция для написания текста на изображении
     :param image_path: str - Путь до изображения которое открываем
     :param image_save_path: str - Путь куда сохраняем
     :param font_path: str - Путь до шрифта ttf!
@@ -19,14 +19,15 @@ def draw_on_image(image_path, image_save_path, font_path, text_to_draw,
 
     # Открываем изображение
     img = Image.open(image_path)
-    # Получаем размеры
+    logo = Image.open(logo_path)
+    # Получаем размеры изображения
     img_width, img_height = img.size
     # Cплитим на линии чтобы красиво было
     lines = textwrap.wrap(text_to_draw, width=40)
-    # Получаем индекс самого длинного текста в строке
+    # Получаем индекс самого длинного текста в строке в списке
     longest_elem_idx = lines.index(max(lines, key=len))
     # Изначальный размер шрифта, потом будем повышать
-    font_size = 1
+    font_size = 30
     # Часть изображения в которой должен поместиться текст
     img_fraction = 0.85
     # Выбираем шрифт, дальше будем его повышать
@@ -51,14 +52,18 @@ def draw_on_image(image_path, image_save_path, font_path, text_to_draw,
     # Рисуем белый текст
     draw.multiline_text(((img_width-text_width)/2, (img_height-text_height)/2),
                         splitted_text, fill=(255, 255, 255), font=font, spacing=spacing, align='center')
+    # Пастим лого
+    img.paste(logo, (20, 20), logo)
     # И сохраняем его как новое
     img.save(image_save_path)
 
 
 if __name__ == "__main__":
+    text_to_draw = '«ЗАЧЕРКНИ ПРОШЛОЕ». СПАЛИВШИЙ КВАРТИРУ С РОДСТВЕННИКАМИ ЖИТЕЛЬ НОВОКОСИНО СИДЕЛ В «ПАЦАНСКИХ ПАБЛИКАХ»'
     draw_on_image(image_path='sample.jpg',
                   image_save_path='sample_with_text.jpg',
+                  logo_path='logo1.png',
                   font_path='reforma_grotesk_bold.ttf',
-                  text_to_draw='АНДРЕЙ ВОРОБЬЕВ ВЫСТУПИТ С ЕЖЕГОДНЫМ ОБРАЩЕНИЕМ К ЖИТЕЛЯМ ПОДМОСКОВЬЯ 14 ФЕВРАЛЯ',
+                  text_to_draw=text_to_draw,
                   shadowcolor='black',
                   spacing=10)
