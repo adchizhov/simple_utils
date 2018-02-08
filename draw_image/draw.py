@@ -3,6 +3,7 @@ from PIL import Image
 from PIL import ImageFont
 from PIL import ImageDraw
 import textwrap
+import html
 
 
 # OTHER FORMATS
@@ -20,7 +21,8 @@ def draw_on_image(image_path, image_save_path, logo_path, font_path, text_to_dra
     :param default_img: bool - Если оно не стоковое, то затемняем
     :return:
     """
-
+    # Меняем в строке laquo raquo и пр. на нормальные unicode символы
+    text_to_draw = html.unescape(text_to_draw)
     # Открываем изображение
     img = Image.open(image_path)
     # Если изображение не стоковое, а это какое-нибудь фото +
@@ -70,7 +72,7 @@ def draw_on_image(image_path, image_save_path, logo_path, font_path, text_to_dra
 
 
 if __name__ == "__main__":
-    text_to_draw = 'Лесовоз вылетел в кювет под Владивостоком'
+    text_to_draw = 'ТЕЛЕВЕДУЩАЯ ЕЛЕНА ЛЕТУЧАЯ РАССКАЗАЛА, ПОЧЕМУ УШЛА ИЗ «РЕВИЗОРРО»'
     draw_on_image(image_path='new_empty.jpg',
                   image_save_path='sample_with_text.jpg',
                   logo_path='new_logo.png',
