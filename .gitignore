@@ -1,7 +1,12 @@
+# trash
 *.pyc
 .idea/
+# images
 *.png
 *.jpg
 *.jpeg
 *.gif
 *.bmp
+# fonts
+*.otf
+*.ttf

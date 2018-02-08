@@ -5,7 +5,7 @@ from PIL import ImageDraw
 import textwrap
 
 
-# FIXME LOGO SIZE
+# FIXME LOGO SIZE + OTHER FORMATS
 def draw_on_image(image_path, image_save_path, logo_path, font_path, text_to_draw,
                   shadowcolor='black', spacing=15, default_img=False):
     """
@@ -26,7 +26,7 @@ def draw_on_image(image_path, image_save_path, logo_path, font_path, text_to_dra
     # Если изображение не стоковое, а это какое-нибудь фото +
     # empty нет в пути изображения FIXME более изящно идентифицировать пустышку
     if not default_img and 'empty' not in image_path:
-        img = img.point(lambda p: p * 0.7)
+        img = img.point(lambda p: p * 0.6)
     # Ооткрываем лого
     logo = Image.open(logo_path)
     # Получаем размеры изображения
@@ -38,7 +38,7 @@ def draw_on_image(image_path, image_save_path, logo_path, font_path, text_to_dra
     # Изначальный размер шрифта, потом будем повышать
     font_size = 10
     # Часть изображения в которой должен поместиться текст
-    img_fraction = 0.85
+    img_fraction = 0.95
     # Выбираем шрифт, дальше будем его повышать
     font = ImageFont.truetype(font_path, font_size)
     # Смотрим по длине первой линии
@@ -55,25 +55,34 @@ def draw_on_image(image_path, image_save_path, logo_path, font_path, text_to_dra
     draw = ImageDraw.Draw(img)
     # Получаем размеры текста
     text_width, text_height = draw.textsize(splitted_text, font=font)
-    # Рисуем цветные буквы немного большего размера
-    draw.multiline_text(((img_width-text_width)/2 + 2, (img_height-text_height)/2 + 2),
-                        splitted_text, fill=shadowcolor, font=font, spacing=spacing, align='center')
+    # Рисуем цветные буквы немного большего размера для эффекта тени
+    # Но это оказалось ненужно
+    # if not default_img and 'empty' not in image_path:
+    #     draw.multiline_text(((img_width-text_width)/2 + 2, (img_height-text_height)/1.2 + 2),
+    #                         splitted_text, fill=shadowcolor, font=font, spacing=spacing, align='left')
     # Рисуем белый текст
-    draw.multiline_text(((img_width-text_width)/2, (img_height-text_height)/2),
-                        splitted_text, fill=(255, 255, 255), font=font, spacing=spacing, align='center')
-    if not default_img and 'empty' not in image_path:  # см. выше
-        # Пастим лого
-        img.paste(logo, (20, 20), logo)
+    draw.multiline_text(((img_width-text_width)/2, (img_height-text_height)/1.2),
+                        splitted_text, fill=(255, 255, 255), font=font, spacing=spacing, align='left')
+    # Пастим лого
+    img.paste(logo, (30, 30), logo)
     # И сохраняем его как новое
     img.save(image_save_path)
 
 
 if __name__ == "__main__":
-    text_to_draw = '«ЗАЧЕРКНИ ПРОШЛОЕ». СПАЛИВШИЙ КВАРТИРУ С РОДСТВЕННИКАМИ ЖИТЕЛЬ НОВОКОСИНО СИДЕЛ В «ПАЦАНСКИХ ПАБЛИКАХ»'
-    draw_on_image(image_path='sample_normal.jpg',
+    text_to_draw = 'Лесовоз вылетел в кювет под Владивостоком'
+    draw_on_image(image_path='new_empty.jpg',
                   image_save_path='sample_with_text.jpg',
-                  logo_path='logo_rainbow.png',
-                  font_path='reforma_grotesk_bold.ttf',
+                  logo_path='new_logo.png',
+                  font_path='frank_medium.otf',
+                  text_to_draw=text_to_draw,
+                  shadowcolor='black',
+                  spacing=10,
+                  default_img=True)
+    draw_on_image(image_path='sample_cat_normal.jpg',
+                  image_save_path='sample_normal_with_text.jpg',
+                  logo_path='new_logo.png',
+                  font_path='frank_medium.otf',
                   text_to_draw=text_to_draw,
                   shadowcolor='black',
                   spacing=10,
