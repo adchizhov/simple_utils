@@ -5,7 +5,7 @@ from PIL import ImageDraw
 import textwrap
 
 
-# FIXME LOGO SIZE + OTHER FORMATS
+# OTHER FORMATS
 def draw_on_image(image_path, image_save_path, logo_path, font_path, text_to_draw,
                   shadowcolor='black', spacing=15, default_img=False):
     """
